@@ -1,6 +1,6 @@
-const axios = require("axios");
 const querystring = require("querystring");
 const { TeamsActivityHandler, CardFactory } = require("botbuilder");
+const { SupplierME } = require("./messageExtensions/supplierME");
 
 class TeamsBot extends TeamsActivityHandler {
   constructor() {
@@ -10,23 +10,18 @@ class TeamsBot extends TeamsActivityHandler {
   // Message extension Code
   // Search.
   async handleTeamsMessagingExtensionQuery(context, query) {
-    // query.parameters[0].name is "searchQuery"
-    const searchQuery = query.parameters[0].value;
-    const response = await axios.get(
-      `https://services.odata.org/V4/Northwind/Northwind.svc/Suppliers?$filter=contains(tolower(CompanyName),tolower('${searchQuery}'))&$top=8`
-    );
 
-    const attachments = [];
-    response.data.value.forEach((supplier) => {
-      const heroCard = CardFactory.heroCard(supplier.CompanyName);
-      const preview = CardFactory.heroCard(supplier.CompanyName);
-      preview.content.tap = {
-        type: "invoke",
-        value: { name: supplier.CompanyName, description: supplier.ContactName },
-      };
-      const attachment = { ...heroCard, preview };
-      attachments.push(attachment);
-    });
+    const queryName = query.parameters[0].name;
+    const searchQuery = query.parameters[0].value;
+
+    let attachments = [];
+    switch (queryName) {
+      case "supplierME":  // Search for suppliers
+        attachments = await SupplierME.query(searchQuery);
+        break;
+      default:
+        break;
+    }
 
     return {
       composeExtension: {
@@ -38,11 +33,21 @@ class TeamsBot extends TeamsActivityHandler {
   }
 
   async handleTeamsMessagingExtensionSelectItem(context, obj) {
+
+    let attachment;
+    switch (obj.queryType) {
+      case "supplierME":  // Search for suppliers
+      attachment = SupplierME.selectItem(obj);
+        break;
+      default:
+        break;
+    }
+    
     return {
       composeExtension: {
         type: "result",
         attachmentLayout: "list",
-        attachments: [CardFactory.heroCard(obj.name, obj.description)],
+        attachments: [attachment]
       },
     };
   }

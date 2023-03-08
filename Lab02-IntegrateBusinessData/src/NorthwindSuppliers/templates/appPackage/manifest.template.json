@@ -35,12 +35,12 @@
                         "commandBox"
                     ],
                     "description": "Find a Northwind supplier",
-                    "title": "Search",
+                    "title": "Supplier search",
                     "type": "query",
                     "parameters": [
                         {
-                            "name": "searchQuery",
-                            "title": "Search Query",
+                            "name": "supplierME",
+                            "title": "Supplier search",
                             "description": "Your search query",
                             "inputType": "text"
                         }
