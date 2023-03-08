@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { CardFactory } = require("botbuilder");
+const { CardFactory, CardAction } = require("botbuilder");
 
 const COUNTRY_CODES = {
     "australia": "au",
@@ -38,19 +38,20 @@ class SupplierME {
                 // Free flag images from https://flagpedia.net/
                 const flagUrl = `https://flagcdn.com/48x36/${COUNTRY_CODES[supplier.Country.toLowerCase()]}.png`;
 
-                const heroCard = CardFactory.heroCard(supplier.CompanyName);
-                const preview = CardFactory.thumbnailCard(supplier.CompanyName, 
+                const itemAttachment = CardFactory.heroCard(supplier.CompanyName);
+                const previewAttachment = CardFactory.thumbnailCard(supplier.CompanyName,
                     `${supplier.City}, ${supplier.Country}`, [flagUrl]);
 
-                    preview.content.tap = {
+                previewAttachment.content.tap = {
                     type: "invoke",
-                    value: {
+                    value: {    // Values passed to selectItem when an item is selected
                         queryType: 'supplierME',
                         name: supplier.CompanyName,
-                        description: supplier.ContactName
+                        description: supplier.ContactName,
+                        flagUrl: flagUrl
                     },
                 };
-                const attachment = { ...heroCard, preview };
+                const attachment = { ...itemAttachment, preview: previewAttachment };
                 attachments.push(attachment);
             });
 
@@ -60,8 +61,11 @@ class SupplierME {
         }
     };
 
-    selectItem = (obj) => {
-        const heroCard = CardFactory.heroCard(obj.name, obj.description);
+    selectItem = (selectedValue) => {
+        const heroCard = CardFactory.heroCard(selectedValue.name,
+            selectedValue.description,
+            [ selectedValue.flagUrl ]
+            );
         return heroCard;
     }
 
