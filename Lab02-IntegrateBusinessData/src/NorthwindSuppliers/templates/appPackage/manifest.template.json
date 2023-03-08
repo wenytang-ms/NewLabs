@@ -34,7 +34,7 @@
                         "compose",
                         "commandBox"
                     ],
-                    "description": "Test command to run query",
+                    "description": "Find a Northwind supplier",
                     "title": "Search",
                     "type": "query",
                     "parameters": [

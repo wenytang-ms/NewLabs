@@ -10,21 +10,19 @@ class TeamsBot extends TeamsActivityHandler {
   // Message extension Code
   // Search.
   async handleTeamsMessagingExtensionQuery(context, query) {
+    // query.parameters[0].name is "searchQuery"
     const searchQuery = query.parameters[0].value;
     const response = await axios.get(
-      `http://registry.npmjs.com/-/v1/search?${querystring.stringify({
-        text: searchQuery,
-        size: 8,
-      })}`
+      `https://services.odata.org/V4/Northwind/Northwind.svc/Suppliers?$filter=contains(tolower(CompanyName),tolower('${searchQuery}'))&$top=8`
     );
 
     const attachments = [];
-    response.data.objects.forEach((obj) => {
-      const heroCard = CardFactory.heroCard(obj.package.name);
-      const preview = CardFactory.heroCard(obj.package.name);
+    response.data.value.forEach((supplier) => {
+      const heroCard = CardFactory.heroCard(supplier.CompanyName);
+      const preview = CardFactory.heroCard(supplier.CompanyName);
       preview.content.tap = {
         type: "invoke",
-        value: { name: obj.package.name, description: obj.package.description },
+        value: { name: supplier.CompanyName, description: supplier.ContactName },
       };
       const attachment = { ...heroCard, preview };
       attachments.push(attachment);
