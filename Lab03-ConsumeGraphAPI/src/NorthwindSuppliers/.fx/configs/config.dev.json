@@ -1,0 +1,18 @@
+{
+    "$schema": "https://aka.ms/teamsfx-env-config-schema",
+    "description": "You can customize the TeamsFx config for different environments. Visit https://aka.ms/teamsfx-env-config to learn more about this.",
+    "manifest": {
+        "appName": {
+            "short": "Northwind Suppliers",
+            "full": "Northwind Suppliers"
+        },
+        "description": {
+            "short": "Insert Northwind supplier information",
+            "full": "Insert Northwind supplier information into Teams and Outlook"
+        },
+        "icons": {
+            "color": "resources/northwind-suppliers-192.png",
+            "outline": "resources/northwind-suppliers-32.png"
+        }
+    }
+}
