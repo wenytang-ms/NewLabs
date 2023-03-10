@@ -1,6 +1,7 @@
 const querystring = require("querystring");
 const { TeamsActivityHandler, CardFactory } = require("botbuilder");
 const { SupplierME } = require("./messageExtensions/supplierME");
+const { ContactME } = require("./messageExtensions/contactME");
 
 class TeamsBot extends TeamsActivityHandler {
   constructor() {
@@ -18,6 +19,9 @@ class TeamsBot extends TeamsActivityHandler {
     switch (queryName) {
       case "supplierME":  // Search for suppliers
         attachments = await SupplierME.query(searchQuery);
+        break;
+      case "contactME":  // Search for contacts
+        attachments = await ContactME.query(searchQuery);
         break;
       default:
         break;
@@ -37,12 +41,15 @@ class TeamsBot extends TeamsActivityHandler {
     let attachment;
     switch (obj.queryType) {
       case "supplierME":  // Search for suppliers
-      attachment = SupplierME.selectItem(obj);
+        attachment = SupplierME.selectItem(obj);
+        break;
+      case "contactME":  // Search for contacts
+        attachment = ContactME.selectItem(obj);
         break;
       default:
         break;
     }
-    
+
     return {
       composeExtension: {
         type: "result",
