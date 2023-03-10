@@ -45,6 +45,24 @@
                             "inputType": "text"
                         }
                     ]
+                },
+                {
+                    "id": "searchEmail",
+                    "context": [
+                        "compose",
+                        "commandBox"
+                    ],
+                    "description": "Share a contact",
+                    "title": "Contact search",
+                    "type": "query",
+                    "parameters": [
+                        {
+                            "name": "contactME",
+                            "title": "Contact search",
+                            "description": "Type name or company",
+                            "inputType": "text"
+                        }
+                    ]
                 }
             ]
         }
