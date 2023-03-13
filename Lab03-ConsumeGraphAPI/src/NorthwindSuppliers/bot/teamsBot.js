@@ -21,7 +21,7 @@ class TeamsBot extends TeamsActivityHandler {
         attachments = await SupplierME.query(searchQuery);
         break;
       case "contactME":  // Search for contacts
-        attachments = await ContactME.query(searchQuery);
+        attachments = await ContactME.query(context, searchQuery);
         break;
       default:
         break;

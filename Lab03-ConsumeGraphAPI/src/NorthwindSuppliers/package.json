@@ -11,6 +11,7 @@
     },
     "license": "MIT",
     "dependencies": {
+        "@microsoft/teamsfx": "^2.2.0",
         "adaptivecards-templating": "^2.3.1"
     }
 }

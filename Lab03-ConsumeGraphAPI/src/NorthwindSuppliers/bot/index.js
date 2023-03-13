@@ -2,6 +2,7 @@
 
 // Import required packages
 const restify = require("restify");
+const path = require("path");
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
@@ -53,9 +54,22 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
 // Listen for incoming requests.
 server.post("/api/messages", async (req, res) => {
   await adapter.process(req, res, async (context) => {
-    await bot.run(context);
+    await bot.run(context).catch((err) => {
+      if (!err.message.includes("412")) {
+        throw err;
+      }
+    });
   });
 });
+
+// Serve static files
+server.get(
+//  "/auth-*.html",
+  "/auth-*",
+  restify.plugins.serveStatic({
+    directory: path.join(__dirname, "public"),
+  })
+);
 
 // Gracefully shutdown HTTP server
 ["exit", "uncaughtException", "SIGINT", "SIGTERM", "SIGUSR1", "SIGUSR2"].forEach((event) => {
