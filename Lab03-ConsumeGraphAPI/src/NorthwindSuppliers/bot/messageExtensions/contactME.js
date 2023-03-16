@@ -18,7 +18,37 @@ const oboAuthConfig = {
 const initialLoginEndpoint = process.env.INITIATE_LOGIN_ENDPOINT;
 
 class ContactME {
+    query = async (token) => {
+        const credential = new OnBehalfOfUserCredential(token.ssoToken, oboAuthConfig);
 
+        // Add scope for your Azure AD app. For example: Mail.Read, etc.
+        const graphClient = createMicrosoftGraphClientWithCredential(credential, "Contacts.Read");
+
+        // Call graph api use `graph` instance to get user profile information.
+        const response = await graphClient.api("/me/contacts").get();
+        const attachments = [];
+        response.data.value.forEach((contact) => {
+
+            const itemAttachment = CardFactory.heroCard(contact.displayName,);
+            const previewAttachment = CardFactory.thumbnailCard(contact.displayName);
+
+            previewAttachment.content.tap = {
+                type: "invoke",
+                value: {    // Values passed to selectItem when an item is selected
+                    queryType: 'contactME',
+                    id: contact.id,
+                    displayName: contact.displayName,
+                    email: contact.emailAddresses[0].address
+                },
+            };
+            const attachment = { ...itemAttachment, preview: previewAttachment };
+            attachments.push(attachment);
+        });
+
+
+        return attachments;
+
+    }
     // Get suppliers given a query
     query = async (context, query) => {
 

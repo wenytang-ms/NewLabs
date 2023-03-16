@@ -16,24 +16,45 @@ class TeamsBot extends TeamsActivityHandler {
     const searchQuery = query.parameters[0].value;
 
     let attachments = [];
-    switch (queryName) {
-      case "supplierME":  // Search for suppliers
-        attachments = await SupplierME.query(searchQuery);
-        break;
-      case "contactME":  // Search for contacts
+    if (queryName === "supplierME") {
+      attachments = await SupplierME.query(searchQuery);
+      return {
+        composeExtension: {
+          type: "result",
+          attachmentLayout: "list",
+          attachments: attachments,
+        },
+      };
+    } else if (queryName === "contactME") {
+      return handleMessageExtensionQueryWithSSO(context, oboAuthConfig, initialLoginEndpoint, "Contacts.Read", async (token) => {
         attachments = await ContactME.query(context, searchQuery);
-        break;
-      default:
-        break;
+        return {
+          composeExtension: {
+            type: "result",
+            attachmentLayout: "list",
+            attachments: attachments,
+          },
+        };
+      });
     }
+    // switch (queryName) {
+    //   case "supplierME":  // Search for suppliers
+    //     attachments = await SupplierME.query(searchQuery);
+    //     break;
+    //   case "contactME":  // Search for contacts
+    //     attachments = await ContactME.query(context, searchQuery);
+    //     break;
+    //   default:
+    //     break;
+    // }
 
-    return {
-      composeExtension: {
-        type: "result",
-        attachmentLayout: "list",
-        attachments: attachments,
-      },
-    };
+    // return {
+    //   composeExtension: {
+    //     type: "result",
+    //     attachmentLayout: "list",
+    //     attachments: attachments,
+    //   },
+    // };
   }
 
   async handleTeamsMessagingExtensionSelectItem(context, obj) {

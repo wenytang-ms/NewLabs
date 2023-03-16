@@ -15,6 +15,8 @@
     "watch": "nodemon ./index.js"
   },
   "dependencies": {
+    "@microsoft/teamsfx": "^2.2.0",
+    "adaptivecards-templating": "^2.3.1",
     "botbuilder": "^4.18.0",
     "isomorphic-fetch": "^3.0.0",
     "restify": "^10.0.0"

@@ -54,11 +54,11 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
 // Listen for incoming requests.
 server.post("/api/messages", async (req, res) => {
   await adapter.process(req, res, async (context) => {
-    await bot.run(context).catch((err) => {
-      if (!err.message.includes("412")) {
-        throw err;
-      }
-    });
+    await bot.run(context);
+  }).catch((err) => {
+    if (!err.message.includes("412")) {
+      throw err;
+    }
   });
 });
 
